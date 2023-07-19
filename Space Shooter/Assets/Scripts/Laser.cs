@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float _laserSpeed = 5f;
+
+    void Update()
     {
+        Move();
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Move()
     {
-        
+        Rigidbody2D rigidbody = GetComponent<Rigidbody2D>();
+        rigidbody.velocity = _laserSpeed * transform.up;
+
+        if(transform.position.y >= 6f)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

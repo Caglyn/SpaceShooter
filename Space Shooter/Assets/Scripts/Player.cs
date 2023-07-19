@@ -4,15 +4,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
-{
-    private Vector2 _movementInput;
+{ 
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private GameObject _laserPrefab;
-    [SerializeField] private float _laserSpeed;
     [SerializeField] private float _timeBetweenShots;
+    [SerializeField] private int _lives = 3;
 
-
-    private bool _fireSingle;
+    private Vector2 _movementInput;
+    private bool _canFire;
     private float _lastFireTime;
 
     void Start()
@@ -24,19 +23,7 @@ public class Player : MonoBehaviour
     {
         Move();
 
-        if(_fireSingle)
-        {
-            float timeSinceLastFire = Time.time - _lastFireTime;
-
-            if(timeSinceLastFire >= _timeBetweenShots)
-            {
-                FireLaser();
-
-                _lastFireTime = Time.time;
-                _fireSingle = false;
-            }
-            
-        }
+        FireLaser();
     }
 
     private void Move()
@@ -59,10 +46,29 @@ public class Player : MonoBehaviour
 
     private void FireLaser()
     {
-        GameObject laser = Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
-        Rigidbody2D rigidbody = laser.GetComponent<Rigidbody2D>();
+        if(_canFire)
+        {
+            float timeSinceLastFire = Time.time - _lastFireTime;
 
-        rigidbody.velocity = _laserSpeed * transform.up;
+            if(timeSinceLastFire >= _timeBetweenShots)
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
+
+                _lastFireTime = Time.time;
+                _canFire = false;
+            }
+            
+        }
+    }
+
+    public void Damage()
+    {
+        _lives--;
+
+        if(_lives == 0)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void OnMove(InputValue value)
@@ -73,7 +79,7 @@ public class Player : MonoBehaviour
 
     private void OnFire(InputValue value)
     {
-        _fireSingle = value.isPressed;
+        _canFire = value.isPressed;
     }
     
 }
