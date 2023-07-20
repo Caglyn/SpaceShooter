@@ -13,10 +13,18 @@ public class Player : MonoBehaviour
     private Vector2 _movementInput;
     private bool _canFire;
     private float _lastFireTime;
+    private SpawnManager _spawnManager;
 
     void Start()
     {
-        transform.position = new Vector3(0, -4.2f, 0);
+        transform.position = new Vector3(0, -3.8f, 0);
+
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+
+        if(_spawnManager == null)
+        {
+            Debug.LogError("The Spawn Manager is NULL!");
+        }
     }
 
     void Update()
@@ -52,7 +60,7 @@ public class Player : MonoBehaviour
 
             if(timeSinceLastFire >= _timeBetweenShots)
             {
-                Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
 
                 _lastFireTime = Time.time;
                 _canFire = false;
@@ -67,6 +75,7 @@ public class Player : MonoBehaviour
 
         if(_lives == 0)
         {
+            _spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
         }
     }
