@@ -6,17 +6,21 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 { 
     [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _speedMultiplier = 2;
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleShotPrefab;
     [SerializeField] private float _timeBetweenShots;
     [SerializeField] private int _lives = 3;
+    [SerializeField] private GameObject _shieldVisualizer;
 
     private Vector2 _movementInput;
     private bool _canFire;
     private float _lastFireTime;
     private SpawnManager _spawnManager;
-    [SerializeField] private bool _isTripleShotActive = false;
-
+    private bool _isTripleShotActive = false;
+    private bool _isSpeedBoostActive = false;
+    private bool _isShieldActive = false;
+    
     void Start()
     {
         transform.position = new Vector3(0, -3.8f, 0);
@@ -80,6 +84,13 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
+        if(_isShieldActive)
+        {
+            _isShieldActive = false;
+            _shieldVisualizer.SetActive(false);
+            return;
+        }
+
         _lives--;
 
         if(_lives == 0)
@@ -99,6 +110,34 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         _isTripleShotActive = false;
+    }
+
+    public void ActivateSpeedBoost()
+    {
+        //_isSpeedBoostActive = true;
+        _moveSpeed *= _speedMultiplier;
+        StartCoroutine(SpeedBoostPowerDownRoutine());
+    }
+
+    IEnumerator SpeedBoostPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _moveSpeed /= _speedMultiplier;
+        //_isSpeedBoostActive = false;
+    }
+
+    public void ActivateShield()
+    {
+        _isShieldActive = true;
+        _shieldVisualizer.SetActive(true);
+        StartCoroutine(ShieldPowerDownRoutine());
+    }
+
+    IEnumerator ShieldPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _isShieldActive = false;
+        _shieldVisualizer.SetActive(false);
     }
 
     private void OnMove(InputValue value)
