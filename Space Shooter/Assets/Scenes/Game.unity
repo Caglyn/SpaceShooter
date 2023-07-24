@@ -248,6 +248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1161199505}
   - component: {fileID: 1161199504}
+  - component: {fileID: 1161199506}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -322,6 +323,26 @@ Transform:
   m_Father: {fileID: 1705588302}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1161199506
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161199503}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: dbd16fc4d21eb5141a80ef4ed5afad7a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1244909209
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,7 +499,6 @@ MonoBehaviour:
   _speedMultiplier: 2
   _laserPrefab: {fileID: 90254868226189347, guid: ecad249164497ac4799b611fbf2f6bca, type: 3}
   _tripleShotPrefab: {fileID: 966401640808718781, guid: c6ae546b0c21f2b4b9854ae19ae51176, type: 3}
-  _shieldPrefab: {fileID: 1973816136701098365, guid: 9f3d95327e41ed843b1709a0ee0f31af, type: 3}
   _timeBetweenShots: 0.35
   _lives: 3
   _shieldVisualizer: {fileID: 1161199503}
