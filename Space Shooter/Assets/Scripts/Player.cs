@@ -12,24 +12,31 @@ public class Player : MonoBehaviour
     [SerializeField] private float _timeBetweenShots;
     [SerializeField] private int _lives = 3;
     [SerializeField] private GameObject _shieldVisualizer;
-
+    
     private Vector2 _movementInput;
     private bool _canFire;
     private float _lastFireTime;
     private SpawnManager _spawnManager;
     private bool _isTripleShotActive = false;
-    private bool _isSpeedBoostActive = false;
     private bool _isShieldActive = false;
-    
+    private int _score;
+    private UIManager _uiManager;
+
     void Start()
     {
         transform.position = new Vector3(0, -3.8f, 0);
 
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
         if(_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL!");
+        }
+
+        if(_uiManager == null)
+        {
+            Debug.LogError("The UIManager is NULL!");
         }
     }
 
@@ -92,6 +99,7 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
+        _uiManager.UpdateLives(_lives);
 
         if(_lives == 0)
         {
@@ -114,7 +122,6 @@ public class Player : MonoBehaviour
 
     public void ActivateSpeedBoost()
     {
-        //_isSpeedBoostActive = true;
         _moveSpeed *= _speedMultiplier;
         StartCoroutine(SpeedBoostPowerDownRoutine());
     }
@@ -123,7 +130,6 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         _moveSpeed /= _speedMultiplier;
-        //_isSpeedBoostActive = false;
     }
 
     public void ActivateShield()
@@ -138,6 +144,12 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5.0f);
         _isShieldActive = false;
         _shieldVisualizer.SetActive(false);
+    }
+
+    public void AddScore(int points)
+    {
+        _score += points;
+        _uiManager.UpdateScore(_score);
     }
 
     private void OnMove(InputValue value)
