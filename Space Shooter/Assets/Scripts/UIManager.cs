@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _gameOverText;
     [SerializeField] private Text _restartText;
     [SerializeField] private Text _returnText;
+    [SerializeField] private GameObject _pauseMenuPanel;
 
     private GameManager _gameManager;
 
@@ -64,5 +66,15 @@ public class UIManager : MonoBehaviour
             _gameOverText.text = "";
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public void ResumePlay()
+    {
+        _gameManager.ResumeGame();
+    }
+
+    public void BacktoMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }
