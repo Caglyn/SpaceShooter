@@ -105,6 +105,7 @@ public class Player : MonoBehaviour
         {
             _spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
+            _uiManager.UpdateBestScore(_score);
         }
     }
 
@@ -155,7 +156,6 @@ public class Player : MonoBehaviour
     private void OnMove(InputValue value)
     {
         _movementInput = value.Get<Vector2>();
-        //Debug.Log(movementInput);
     }
 
     private void OnFire(InputValue value)

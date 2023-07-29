@@ -13,13 +13,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _restartText;
     [SerializeField] private Text _returnText;
     [SerializeField] private GameObject _pauseMenuPanel;
+    [SerializeField] private Text _bestScoreText;
 
     private GameManager _gameManager;
+    private int _bestScore;
 
     // Start is called before the first frame update
     void Start()
     {
         _scoreText.text = "Score: " + 0;
+
+        _bestScore = PlayerPrefs.GetInt("HighScore", 0); // 0 is default value, only used if there is no HighScore txt
+        _bestScoreText.text = "Best: " + _bestScore;
+
         _gameOverText.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
         _returnText.gameObject.SetActive(false);
@@ -35,6 +41,17 @@ public class UIManager : MonoBehaviour
     public void UpdateScore(int playerScore)
     {
         _scoreText.text = "Score: " + playerScore.ToString();
+    }
+
+    public void UpdateBestScore(int playerScore)
+    {
+        if(playerScore > _bestScore)
+        {
+            _bestScore = playerScore;
+            PlayerPrefs.SetInt("HighScore", _bestScore);
+            _bestScoreText.text = "Best: " + _bestScore;
+        }
+        
     }
 
     public void UpdateLives(int currentLives)
@@ -54,10 +71,10 @@ public class UIManager : MonoBehaviour
         _gameOverText.gameObject.SetActive(true);
         _restartText.gameObject.SetActive(true);
         _returnText.gameObject.SetActive(true);
-        StartCoroutine(GameOverFlickerRoutine());
+        StartCoroutine(GameOverTextFlickerRoutine());
     }
 
-    IEnumerator GameOverFlickerRoutine()
+    IEnumerator GameOverTextFlickerRoutine()
     {
         while(true)
         {
