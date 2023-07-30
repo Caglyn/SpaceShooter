@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float _timeBetweenShots;
     [SerializeField] private int _lives = 3;
     [SerializeField] private GameObject _shieldVisualizer;
+    [SerializeField] private GameObject[] _damagedEngines;// 0 is right, 1 is left
+    [SerializeField] private GameObject _thruster;
     
     private Vector2 _movementInput;
     private bool _canFire;
@@ -21,6 +23,7 @@ public class Player : MonoBehaviour
     private bool _isShieldActive = false;
     private int _score;
     private UIManager _uiManager;
+    private Animator _anim;
 
     void Start()
     {
@@ -28,6 +31,13 @@ public class Player : MonoBehaviour
 
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+
+        _anim = GetComponent<Animator>();
+
+        if(_anim == null)
+        {
+            Debug.LogError("The animator is NULL!");
+        }
 
         if(_spawnManager == null)
         {
@@ -101,12 +111,33 @@ public class Player : MonoBehaviour
         _lives--;
         _uiManager.UpdateLives(_lives);
 
-        if(_lives == 0)
+        switch(_lives)
         {
-            _spawnManager.OnPlayerDeath();
-            Destroy(this.gameObject);
-            _uiManager.UpdateBestScore(_score);
+            case 2:
+                _damagedEngines[0].SetActive(true);
+                break;
+            case 1:
+                _damagedEngines[1].SetActive(true);
+                break;
+            case 0:
+                OnDeath();
+                break;
         }
+    }
+
+    public void OnDeath()
+    {
+        _moveSpeed = 0;
+
+        _spawnManager.OnPlayerDeath();
+
+        _anim.SetTrigger("OnPlayerDeath");
+        _damagedEngines[0].SetActive(false);
+        _damagedEngines[1].SetActive(false);
+        _thruster.SetActive(false);
+        Destroy(this.gameObject, 2.5f);
+        
+        _uiManager.UpdateBestScore(_score);
     }
 
     public void ActivateTripleShot()
