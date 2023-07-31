@@ -14,7 +14,8 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _shieldVisualizer;
     [SerializeField] private GameObject[] _damagedEngines;// 0 is right, 1 is left
     [SerializeField] private GameObject _thruster;
-    
+    [SerializeField] private AudioClip _laserSoundClip;
+
     private Vector2 _movementInput;
     private bool _canFire;
     private float _lastFireTime;
@@ -24,6 +25,7 @@ public class Player : MonoBehaviour
     private int _score;
     private UIManager _uiManager;
     private Animator _anim;
+    private AudioSource _audioSource;
 
     void Start()
     {
@@ -31,6 +33,7 @@ public class Player : MonoBehaviour
 
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _audioSource = GetComponent<AudioSource>();
 
         _anim = GetComponent<Animator>();
 
@@ -47,6 +50,15 @@ public class Player : MonoBehaviour
         if(_uiManager == null)
         {
             Debug.LogError("The UIManager is NULL!");
+        }
+
+        if(_audioSource == null)
+        {
+            Debug.LogError("AudioSource on the player is NULL!");
+        }
+        else
+        {
+            _audioSource.clip = _laserSoundClip;
         }
     }
 
@@ -94,6 +106,7 @@ public class Player : MonoBehaviour
                 
                 _lastFireTime = Time.time;
                 _canFire = false;
+                _audioSource.Play();
             }
         }
 

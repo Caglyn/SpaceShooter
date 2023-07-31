@@ -5,14 +5,17 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 4f;
+    [SerializeField] private GameObject _thruster;
 
     private Player _player;
     private Animator _anim;
+    private AudioSource _audioSource;
 
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
         _anim = GetComponent<Animator>();
+        _audioSource = GetComponent<AudioSource>();
 
         if(_player == null)
         {
@@ -22,6 +25,11 @@ public class Enemy : MonoBehaviour
         if(_anim == null)
         {
             Debug.LogError("The animator is NULL!");
+        }
+
+        if(_audioSource == null)
+        {
+            Debug.LogError("AudioSource on the enemy is NULL!");
         }
     }
 
@@ -70,7 +78,9 @@ public class Enemy : MonoBehaviour
     public void OnDeath()
     {
         _anim.SetTrigger("OnEnemyDeath");
+        _thruster.SetActive(false);
         Destroy(GetComponent<Collider2D>());
         Destroy(this.gameObject, 2.5f);
+        _audioSource.Play();
     }
 }
